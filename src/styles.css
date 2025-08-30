@@ -560,3 +560,393 @@ button[aria-label*="Hint"]:hover:not(:disabled) {
     padding: 4px 8px;
   }
 }
+
+/* Help component enhancements */
+.help-container {
+  max-width: 100%;
+}
+
+.help h4 {
+  color: var(--accent-2);
+  margin: 16px 0 8px 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.help h4:first-child {
+  margin-top: 0;
+}
+
+/* State symbols grid */
+.state-symbols-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.state-symbol-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.state-symbol-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.state-symbol {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-2);
+  margin-bottom: 8px;
+}
+
+.state-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-transform: capitalize;
+}
+
+.state-description {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Ion comparison table */
+.ion-comparison-table {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 20px 0;
+}
+
+.ion-element-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.element-header h4 {
+  margin: 0 0 16px 0;
+  color: var(--accent-2);
+  font-size: 20px;
+  text-align: center;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
+}
+
+.ion-types {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.ion-type {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ion-type.elemental {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-color: var(--accent);
+}
+
+.ion-type.polyatomic {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: var(--accent-3);
+}
+
+.ion-header {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ion-symbol {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-2);
+  margin: 8px 0;
+  font-family: monospace;
+}
+
+.ion-name {
+  font-size: 14px;
+  color: var(--text);
+  margin: 8px 0;
+  font-weight: 600;
+}
+
+.ion-charge {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 8px 0;
+}
+
+.ion-arrow {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.polyatomic-ion {
+  margin: 12px 0;
+  padding: 8px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.polyatomic-ion:first-child {
+  margin-top: 0;
+}
+
+.polyatomic-ion:last-child {
+  margin-bottom: 0;
+}
+
+.ion-pattern {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 4px;
+}
+
+/* Responsive design for ion comparison */
+@media (max-width: 768px) {
+  .ion-types {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .ion-arrow {
+    transform: rotate(90deg);
+    font-size: 20px;
+  }
+  
+  .state-symbols-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  
+  .state-symbol-card {
+    padding: 12px;
+  }
+  
+  .state-symbol {
+    font-size: 20px;
+  }
+  
+  .state-name {
+    font-size: 14px;
+  }
+}
+
+/* Enhanced callout styling */
+.callout {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 20px 0;
+  border-left: 4px solid var(--warn);
+}
+
+.callout strong {
+  color: var(--warn);
+}
+
+/* Enhanced tip styling */
+.tip {
+  background: #ecfeff;
+  border: 1px solid #cffafe;
+  padding: 16px;
+  border-radius: 12px;
+  margin: 20px 0;
+  border-left: 4px solid var(--accent);
+}
+
+.tip strong {
+  color: var(--accent);
+}
+
+/* Comparison grid for molecular vs aqueous forms */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.comparison-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.comparison-card.molecular {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+}
+
+.comparison-card.aqueous {
+  border-color: var(--accent-3);
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+}
+
+.comparison-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.comparison-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.comparison-header h4 {
+  margin: 0;
+  color: var(--text);
+  font-size: 18px;
+}
+
+.state-badge {
+  background: var(--accent-2);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.formula-large {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 16px 0;
+  color: var(--accent-2);
+}
+
+.compound-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 12px 0;
+  color: var(--text);
+}
+
+.description {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 12px 0;
+  font-style: italic;
+}
+
+.properties {
+  text-align: left;
+  margin-top: 16px;
+}
+
+.property {
+  margin: 8px 0;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.comparison-arrow {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.naming-pattern {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.naming-pattern h4 {
+  margin: 0 0 12px 0;
+  color: var(--accent-2);
+}
+
+.pattern-example {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  margin: 12px 0;
+  font-family: monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.pattern-rule {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 12px;
+}
+
+/* Responsive design for comparison grid */
+@media (max-width: 768px) {
+  .comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .comparison-arrow {
+    transform: rotate(90deg);
+    font-size: 24px;
+  }
+  
+  .formula-large {
+    font-size: 28px;
+  }
+  
+  .comparison-card {
+    padding: 16px;
+  }
+}
+
+/* Enhanced state badges */
+.state-badge.g {
+  background: var(--accent);
+}
+
+.state-badge.aq {
+  background: var(--accent-3);
+}
+
+.state-badge.s {
+  background: var(--muted);
+}
+
+.state-badge.l {
+  background: var(--warn);
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Practice from './components/Practice.jsx'
 import Builder from './components/Builder.jsx'
 import Help from './components/Help.jsx'
+import AcidsBases from './components/AcidsBases.jsx'
 import { ScoreBar } from './components/ScoreBar.jsx'
 
 export default function App() {
@@ -12,11 +13,11 @@ export default function App() {
     <div className='container'>
       <div className='title'>
         🧪 Name That Compound! 
-        <span className='badge brand'>v0.5</span>
+        <span className='badge brand'>v0.6</span>
       </div>
       
       <div className='subtitle'>
-        Build compounds, decide ionic vs covalent, and name them correctly. 
+        Build compounds, decide ionic vs covalent, name acids & bases, and understand state differences. 
         Includes a full built-in naming guide.
       </div>
       
@@ -58,6 +59,22 @@ export default function App() {
         </div>
         
         <div 
+          className={tab === 'acids-bases' ? 'tab active' : 'tab'} 
+          onClick={() => setTab('acids-bases')}
+          role="tab"
+          aria-selected={tab === 'acids-bases'}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setTab('acids-bases')
+            }
+          }}
+        >
+          Acids & Bases
+        </div>
+        
+        <div 
           className={tab === 'help' ? 'tab active' : 'tab'} 
           onClick={() => setTab('help')}
           role="tab"
@@ -79,6 +96,7 @@ export default function App() {
       
       {tab === 'practice' && <Practice score={score} setScore={setScore} />}
       {tab === 'builder' && <Builder />}
+      {tab === 'acids-bases' && <AcidsBases />}
       {tab === 'help' && <Help />}
     </div>
   )
