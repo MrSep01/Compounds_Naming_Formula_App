@@ -385,3 +385,256 @@ export function compareForms(formula) {
     }
   }
 }
+
+// Comprehensive oxyanion table with naming progression
+export const oxyanions = [
+  {
+    element: 'Chlorine',
+    symbol: 'Cl',
+    baseCharge: -1,
+    progression: [
+      {
+        formula: 'ClO₄⁻',
+        name: 'perchlorate',
+        oxygen: 4,
+        pattern: 'most oxygen',
+        definition: 'Highest oxidation state, most oxygen atoms',
+        examples: ['KClO₄', 'NaClO₄'],
+        commonUses: 'Oxidizing agents, explosives'
+      },
+      {
+        formula: 'ClO₃⁻',
+        name: 'chlorate',
+        oxygen: 3,
+        pattern: 'more oxygen',
+        definition: 'Standard oxidation state, common form',
+        examples: ['KClO₃', 'NaClO₃'],
+        commonUses: 'Disinfectants, weed killers'
+      },
+      {
+        formula: 'ClO₂⁻',
+        name: 'chlorite',
+        oxygen: 2,
+        pattern: 'less oxygen',
+        definition: 'Lower oxidation state, fewer oxygen atoms',
+        examples: ['NaClO₂', 'KClO₂'],
+        commonUses: 'Bleaching agents'
+      },
+      {
+        formula: 'ClO⁻',
+        name: 'hypochlorite',
+        oxygen: 1,
+        pattern: 'least oxygen',
+        definition: 'Lowest oxidation state, least oxygen atoms',
+        examples: ['NaClO', 'Ca(ClO)₂'],
+        commonUses: 'Bleach, disinfectants'
+      }
+    ]
+  },
+  {
+    element: 'Sulfur',
+    symbol: 'S',
+    baseCharge: -2,
+    progression: [
+      {
+        formula: 'SO₄²⁻',
+        name: 'sulfate',
+        oxygen: 4,
+        pattern: 'most oxygen',
+        definition: 'Highest oxidation state, most common form',
+        examples: ['Na₂SO₄', 'CaSO₄'],
+        commonUses: 'Fertilizers, construction materials'
+      },
+      {
+        formula: 'SO₃²⁻',
+        name: 'sulfite',
+        oxygen: 3,
+        pattern: 'less oxygen',
+        definition: 'Lower oxidation state, fewer oxygen atoms',
+        examples: ['Na₂SO₃', 'K₂SO₃'],
+        commonUses: 'Preservatives, reducing agents'
+      }
+    ]
+  },
+  {
+    element: 'Nitrogen',
+    symbol: 'N',
+    baseCharge: -1,
+    progression: [
+      {
+        formula: 'NO₃⁻',
+        name: 'nitrate',
+        oxygen: 3,
+        pattern: 'most oxygen',
+        definition: 'Highest oxidation state, most common form',
+        examples: ['KNO₃', 'NaNO₃'],
+        commonUses: 'Fertilizers, explosives'
+      },
+      {
+        formula: 'NO₂⁻',
+        name: 'nitrite',
+        oxygen: 2,
+        pattern: 'less oxygen',
+        definition: 'Lower oxidation state, fewer oxygen atoms',
+        examples: ['NaNO₂', 'KNO₂'],
+        commonUses: 'Food preservatives, curing agents'
+      }
+    ]
+  },
+  {
+    element: 'Phosphorus',
+    symbol: 'P',
+    baseCharge: -3,
+    progression: [
+      {
+        formula: 'PO₄³⁻',
+        name: 'phosphate',
+        oxygen: 4,
+        pattern: 'most oxygen',
+        definition: 'Highest oxidation state, most common form',
+        examples: ['Na₃PO₄', 'Ca₃(PO₄)₂'],
+        commonUses: 'Fertilizers, detergents'
+      },
+      {
+        formula: 'PO₃³⁻',
+        name: 'phosphite',
+        oxygen: 3,
+        pattern: 'less oxygen',
+        definition: 'Lower oxidation state, fewer oxygen atoms',
+        examples: ['Na₃PO₃', 'K₃PO₃'],
+        commonUses: 'Reducing agents, plant nutrients'
+      }
+    ]
+  },
+  {
+    element: 'Carbon',
+    symbol: 'C',
+    baseCharge: -2,
+    progression: [
+      {
+        formula: 'CO₃²⁻',
+        name: 'carbonate',
+        oxygen: 3,
+        pattern: 'most oxygen',
+        definition: 'Most common form, stable anion',
+        examples: ['Na₂CO₃', 'CaCO₃'],
+        commonUses: 'Construction, antacids'
+      },
+      {
+        formula: 'CO₂²⁻',
+        name: 'carbonite',
+        oxygen: 2,
+        pattern: 'less oxygen',
+        definition: 'Unstable form, rarely found',
+        examples: ['Na₂CO₂'],
+        commonUses: 'Laboratory research only'
+      }
+    ]
+  }
+]
+
+// Enhanced compound type identification for game mode
+export function getCompoundType(formula, state = '') {
+  // Check if it's an acid (starts with H and ends with aqueous state)
+  if (state === 'aq' && formula.startsWith('H')) {
+    return 'acid'
+  }
+  
+  // Check if it's a base (contains OH or is NH₃)
+  if (formula.includes('OH') || formula === 'NH₃') {
+    return 'base'
+  }
+  
+  // Check if it's ionic (metal + non-metal or polyatomic)
+  const hasMetal = /[A-Z][a-z]?/.test(formula) && /[A-Z][a-z]?/.test(formula.replace(/[A-Z][a-z]?/, ''))
+  const hasPolyatomic = /[A-Z][a-z]?\d*/.test(formula) && formula.length > 2
+  
+  if (hasMetal || hasPolyatomic) {
+    return 'ionic'
+  }
+  
+  // Must be covalent
+  return 'covalent'
+}
+
+// Enhanced naming rules with user-friendly explanations
+export const namingRules = {
+  ionic: {
+    title: "🧪 Ionic Compounds",
+    description: "Compounds made of positive ions (cations) and negative ions (anions)",
+    rules: [
+      {
+        rule: "Binary Ionic (Metal + Non-metal)",
+        pattern: "Metal name + Non-metal root + -ide",
+        examples: ["NaCl → sodium chloride", "CaO → calcium oxide"],
+        explanation: "Simple! Just say the metal name, then the non-metal with '-ide' ending."
+      },
+      {
+        rule: "Transition Metals (Variable Charge)",
+        pattern: "Metal name (charge) + Non-metal root + -ide",
+        examples: ["FeCl₂ → iron(II) chloride", "CuO → copper(II) oxide"],
+        explanation: "For metals with multiple charges, show the charge in parentheses using Roman numerals."
+      },
+      {
+        rule: "Polyatomic Ions",
+        pattern: "Metal name + Polyatomic ion name",
+        examples: ["Na₂SO₄ → sodium sulfate", "CaCO₃ → calcium carbonate"],
+        explanation: "Keep the polyatomic ion name as-is, just add the metal name in front."
+      }
+    ]
+  },
+  covalent: {
+    title: "🔗 Covalent Compounds",
+    description: "Compounds made of non-metals sharing electrons",
+    rules: [
+      {
+        rule: "Greek Prefixes",
+        pattern: "Prefix + First element + Prefix + Second element + -ide",
+        examples: ["CO₂ → carbon dioxide", "N₂O₅ → dinitrogen pentoxide"],
+        explanation: "Use Greek prefixes to show how many atoms of each element. No prefix needed for 'mono-' on the first element."
+      },
+      {
+        rule: "Common Names",
+        pattern: "Some compounds have special names",
+        examples: ["H₂O → water", "NH₃ → ammonia", "CH₄ → methane"],
+        explanation: "Some compounds are so common they have special names you just need to memorize!"
+      }
+    ]
+  },
+  acids: {
+    title: "⚗️ Acids",
+    description: "Compounds that release H⁺ ions in water",
+    rules: [
+      {
+        rule: "Binary Acids (H + Non-metal)",
+        pattern: "Hydro- + Non-metal root + -ic acid",
+        examples: ["HCl(aq) → hydrochloric acid", "HF(aq) → hydrofluoric acid"],
+        explanation: "Start with 'hydro-', add the non-metal root, then '-ic acid'. Easy to remember!"
+      },
+      {
+        rule: "Oxyacids (H + Polyatomic)",
+        pattern: "Polyatomic root + -ic/-ous acid",
+        examples: ["H₂SO₄(aq) → sulfuric acid", "HNO₂(aq) → nitrous acid"],
+        explanation: "For oxyacids, use the polyatomic ion name but change '-ate' to '-ic' and '-ite' to '-ous', then add 'acid'."
+      }
+    ]
+  },
+  bases: {
+    title: "🧪 Bases",
+    description: "Compounds that release OH⁻ ions in water",
+    rules: [
+      {
+        rule: "Metal Hydroxides",
+        pattern: "Metal name + hydroxide",
+        examples: ["NaOH(aq) → sodium hydroxide", "Ca(OH)₂(aq) → calcium hydroxide"],
+        explanation: "Simply say the metal name followed by 'hydroxide'."
+      },
+      {
+        rule: "Ammonia",
+        pattern: "NH₃(aq) → ammonium hydroxide",
+        examples: ["NH₃(aq) → ammonium hydroxide"],
+        explanation: "Ammonia in water forms ammonium hydroxide, a weak base."
+      }
+    ]
+  }
+}

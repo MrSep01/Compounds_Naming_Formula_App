@@ -145,12 +145,7 @@ export default function AcidsBases() {
         )}
 
         {mode === 'comparison' && (
-          <div className="card">
-            <div className="section-title">Molecular vs Aqueous Forms</div>
-            <div className="headerband">
-              Understand how the same compound can have different names and properties depending on its state.
-            </div>
-
+          <>
             <div className="row" style={{ marginBottom: 16 }}>
               <div>
                 <label htmlFor="comparison-select" className="section-title">Select Compound</label>
@@ -170,77 +165,79 @@ export default function AcidsBases() {
             </div>
 
             {comparisonData && (
-              <div className="comparison-grid">
-                <div className="comparison-card molecular">
-                  <div className="comparison-header">
-                    <h4>🧪 Molecular Form</h4>
-                    <div className="state-badge">{comparisonData.molecular.state}</div>
-                  </div>
-                  <div className="formula-large">
-                    {comparisonData.molecular.formula}
-                  </div>
-                  <div className="compound-name">
-                    {comparisonData.molecular.name}
-                  </div>
-                  <div className="description">
-                    {comparisonData.molecular.description}
-                  </div>
-                  <div className="properties">
-                    <div className="property">
-                      <strong>Type:</strong> Covalent molecule
+              <>
+                <div className="comparison-grid">
+                  <div className="comparison-card molecular">
+                    <div className="comparison-header">
+                      <h4>🧪 Molecular Form</h4>
+                      <div className="state-badge">{comparisonData.molecular.state}</div>
                     </div>
-                    <div className="property">
-                      <strong>State:</strong> Gas at room temperature
+                    <div className="formula-large">
+                      {comparisonData.molecular.formula}
                     </div>
-                    <div className="property">
-                      <strong>Conductivity:</strong> Poor conductor
+                    <div className="compound-name">
+                      {comparisonData.molecular.name}
+                    </div>
+                    <div className="description">
+                      {comparisonData.molecular.description}
+                    </div>
+                    <div className="properties">
+                      <div className="property">
+                        <strong>Type:</strong> Covalent molecule
+                      </div>
+                      <div className="property">
+                        <strong>State:</strong> Gas at room temperature
+                      </div>
+                      <div className="property">
+                        <strong>Conductivity:</strong> Poor conductor
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="comparison-arrow">→</div>
+
+                  <div className="comparison-card aqueous">
+                    <div className="comparison-header">
+                      <h4>💧 Aqueous Form</h4>
+                      <div className="state-badge">{comparisonData.aqueous.state}</div>
+                    </div>
+                    <div className="formula-large">
+                      {comparisonData.aqueous.formula}
+                    </div>
+                    <div className="compound-name">
+                      {comparisonData.aqueous.name}
+                    </div>
+                    <div className="description">
+                      {comparisonData.aqueous.description}
+                    </div>
+                    <div className="properties">
+                      <div className="property">
+                        <strong>Type:</strong> {comparisonData.aqueous.description.includes('Acidic') ? 'Acid solution' : 'Base solution'}
+                      </div>
+                      <div className="property">
+                        <strong>State:</strong> Dissolved in water
+                      </div>
+                      <div className="property">
+                        <strong>Conductivity:</strong> Good conductor
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="comparison-arrow">→</div>
-
-                <div className="comparison-card aqueous">
-                  <div className="comparison-header">
-                    <h4>💧 Aqueous Form</h4>
-                    <div className="state-badge">{comparisonData.aqueous.state}</div>
+                <div className="naming-pattern" style={{ marginTop: 16 }}>
+                  <h4>📝 Naming Pattern</h4>
+                  <div className="pattern-example">
+                    <strong>Molecular:</strong> {comparisonData.molecular.name} ({comparisonData.molecular.state})
+                    <br />
+                    <strong>Aqueous:</strong> {comparisonData.aqueous.name} ({comparisonData.aqueous.state})
                   </div>
-                  <div className="formula-large">
-                    {comparisonData.aqueous.formula}
-                  </div>
-                  <div className="compound-name">
-                    {comparisonData.aqueous.name}
-                  </div>
-                  <div className="description">
-                    {comparisonData.aqueous.description}
-                  </div>
-                  <div className="properties">
-                    <div className="property">
-                      <strong>Type:</strong> {comparisonData.aqueous.description.includes('Acidic') ? 'Acid solution' : 'Base solution'}
-                    </div>
-                    <div className="property">
-                      <strong>State:</strong> Dissolved in water
-                    </div>
-                    <div className="property">
-                      <strong>Conductivity:</strong> Good conductor
-                    </div>
+                  <div className="pattern-rule">
+                    <strong>Rule:</strong> When dissolved in water, molecular compounds often form acids or bases with different naming conventions.
                   </div>
                 </div>
-              </div>
-
-              <div className="naming-pattern" style={{ marginTop: 16 }}>
-                <h4>📝 Naming Pattern</h4>
-                <div className="pattern-example">
-                  <strong>Molecular:</strong> {comparisonData.molecular.name} ({comparisonData.molecular.state})
-                  <br />
-                  <strong>Aqueous:</strong> {comparisonData.aqueous.name} ({comparisonData.aqueous.state})
-                </div>
-                <div className="pattern-rule">
-                  <strong>Rule:</strong> When dissolved in water, molecular compounds often form acids or bases with different naming conventions.
-                </div>
-              </div>
+              </>
             )}
-          </div>
+          </>
         )}
       </div>
 
