@@ -8,15 +8,56 @@ export default function Practice({ score, setScore }) {
   const [guessName, setGuessName] = useState('')
   const [feedback, setFeedback] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  
+  // New features
+  const [difficulty, setDifficulty] = useState('medium') // 'easy', 'medium', 'hard'
+  const [timerMode, setTimerMode] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(60)
+  const [showHint, setShowHint] = useState(false)
+  const [hintLevel, setHintLevel] = useState(0)
 
   useEffect(() => {
     setGuessType('ionic')
     setGuessName('')
     setFeedback(null)
     setStage('classify')
+    setShowHint(false)
+    setHintLevel(0)
   }, [q.id])
 
+  // Timer effect
+  useEffect(() => {
+    if (!timerMode || stage === 'done') return
+    
+    const interval = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          // Time's up - mark as wrong
+          handleTimeUp()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [timerMode, stage])
+
   const formulaHTML = useMemo(() => formatFormula(q.parts), [q])
+
+  function handleTimeUp() {
+    setFeedback({
+      msg: '⏰ Time\'s up! The answer was: ' + q.primary,
+      type: 'error',
+      reveal: true
+    })
+    setScore({
+      ...score,
+      total: score.total + 1,
+      streak: 0
+    })
+    setStage('done')
+  }
 
   function onCheckType() {
     if (isLoading) return
@@ -85,6 +126,9 @@ export default function Practice({ score, setScore }) {
     setGuessName('')
     setFeedback(null)
     setStage('classify')
+    setShowHint(false)
+    setHintLevel(0)
+    if (timerMode) setTimeLeft(60)
   }
 
   function handleKeyPress(e, action) {
@@ -94,10 +138,66 @@ export default function Practice({ score, setScore }) {
     }
   }
 
+  function getHint() {
+    if (hintLevel === 0) {
+      setHintLevel(1)
+      setShowHint(true)
+    } else if (hintLevel === 1) {
+      setHintLevel(2)
+    }
+  }
+
+  function getHintText() {
+    if (hintLevel === 1) {
+      return q.kind === 'ionic' 
+        ? 'Look for metal + non-metal combination'
+        : 'Look for non-metal + non-metal combination'
+    } else if (hintLevel === 2) {
+      return q.kind === 'ionic'
+        ? `Think: ${q.parts[0]?.symbol || ''} + ${q.parts[1]?.symbol || ''}`
+        : `Count the atoms: ${q.parts.map(p => p.count).join('')}`
+    }
+    return ''
+  }
+
   return (
     <div className="grid">
       <div className="card">
         <div className="section-title">Practice Mode — Step-by-step</div>
+        
+        {/* Difficulty and Timer Controls */}
+        <div className="row" style={{ marginBottom: 16 }}>
+          <div>
+            <label htmlFor="difficulty-select" className="section-title">Difficulty</label>
+            <select 
+              id="difficulty-select"
+              value={difficulty} 
+              onChange={e => setDifficulty(e.target.value)}
+            >
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div>
+            <label className="section-title">Timer Mode</label>
+            <div className="row" style={{ gap: 8, marginTop: 4 }}>
+              <button 
+                className={timerMode ? 'active' : 'ghost'}
+                onClick={() => setTimerMode(!timerMode)}
+                style={{ padding: '6px 12px', fontSize: '14px' }}
+              >
+                {timerMode ? '⏰ ON' : '⏰ OFF'}
+              </button>
+              {timerMode && (
+                <div className="timer">
+                  ⏱️ {timeLeft}s
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
         <div className="headerband">
           Step 1: Decide if the compound is <b>Ionic</b> or <b>Covalent</b>. 
           If correct, Step 2 unlocks: name it.
@@ -179,7 +279,24 @@ export default function Practice({ score, setScore }) {
           >
             Next
           </button>
+          
+          {stage === 'classify' && (
+            <button 
+              className="secondary" 
+              onClick={getHint}
+              disabled={hintLevel >= 2}
+              aria-label="Get a hint"
+            >
+              💡 Hint ({hintLevel}/2)
+            </button>
+          )}
         </div>
+
+        {showHint && hintLevel > 0 && (
+          <div className="feedback feedback-info" style={{ marginTop: 12 }}>
+            <div><strong>💡 Hint:</strong> {getHintText()}</div>
+          </div>
+        )}
 
         {feedback && (
           <div className={`feedback feedback-${feedback.type}`} style={{ marginTop: 12 }}>
