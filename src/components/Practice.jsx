@@ -199,11 +199,11 @@ export default function Practice({ score, setScore }) {
     <div className="card">
       <div className="section-title">Practice Naming Compounds</div>
       <div className="headerband">
-          Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
-        </div>
+        Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
+      </div>
 
-        {/* Controls */}
-        <div className="row" style={{ marginBottom: 16 }}>
+      {/* Controls */}
+      <div className="row" style={{ marginBottom: 16 }}>
           <div>
             <label htmlFor="question-type-select" className="section-title">Question Type</label>
             <select 
