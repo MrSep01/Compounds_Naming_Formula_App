@@ -196,8 +196,7 @@ export default function Practice({ score, setScore }) {
   }
 
   return (
-    <div className="grid">
-      <div className="card">
+    <div className="card">
         <div className="section-title">Practice Naming Compounds</div>
         <div className="headerband">
           Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
@@ -361,23 +360,6 @@ export default function Practice({ score, setScore }) {
             )}
           </div>
         )}
-      </div>
-
-      {/* Score Display */}
-      <div className="card">
-        <div className="section-title">Your Progress</div>
-        
-        <div className="progress-stats">
-          <div className="stat-item">
-            <strong>Accuracy:</strong> {score.total ? Math.round((score.correct / score.total) * 100) : 0}%
-          </div>
-          <div className="stat-item">
-            <strong>Current Streak:</strong> {score.streak}
-          </div>
-          <div className="stat-item">
-            <strong>Questions Attempted:</strong> {score.total}
-          </div>
-        </div>
       </div>
     </div>
   )
