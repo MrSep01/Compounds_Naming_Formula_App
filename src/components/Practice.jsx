@@ -197,8 +197,8 @@ export default function Practice({ score, setScore }) {
 
   return (
     <div className="card">
-        <div className="section-title">Practice Naming Compounds</div>
-        <div className="headerband">
+      <div className="section-title">Practice Naming Compounds</div>
+      <div className="headerband">
           Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
         </div>
 
