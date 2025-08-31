@@ -1,5 +1,9 @@
 import React, { useMemo, useState } from 'react'
-import { cations, anions, nonmetals, formatFormula, nameIonicFromParts, nameCovalentFromParts, ionTokenHtml, covalentLooksCommon, acids, bases, elementRoot } from '../utils/data.js'
+import { cations, anions, nonmetals, acids, bases, elementRoot } from '../utils/data.js'
+import { formatFormula, nameIonicFromParts, nameCovalentFromParts, ionTokenHtml, covalentLooksCommon } from '../utils/naming.js'
+
+// Helper function for greatest common divisor
+function gcd(a, b) { return b ? gcd(b, a % b) : a }
 
 export default function Builder() {
   const [mode, setMode] = useState('ionic') // 'ionic' | 'covalent' | 'acids' | 'bases'
@@ -132,365 +136,332 @@ export default function Builder() {
   }, [mode, cat, an, nm1, n1, nm2, n2, acidName, baseName])
   
   return (
-    <div className="grid">
-      <div className="card">
-        <div className="section-title">Sandbox Builder</div>
-        <div className="headerband">
-          Build compounds step by step and see how naming works. 
-          Switch between Ionic and Covalent modes to explore different compound types.
-        </div>
-        
-        <div className="row" style={{ marginBottom: 16 }}>
-          <button 
-            className={mode === 'ionic' ? 'active' : 'secondary'} 
-            onClick={() => setMode('ionic')}
-            aria-pressed={mode === 'ionic'}
-          >
-            Ionic Compounds
-          </button>
-          <button 
-            className={mode === 'covalent' ? 'active' : 'secondary'} 
-            onClick={() => setMode('covalent')}
-            aria-pressed={mode === 'covalent'}
-          >
-            Covalent Compounds
-          </button>
-          <button 
-            className={mode === 'acids' ? 'active' : 'secondary'} 
-            onClick={() => setMode('acids')}
-            aria-pressed={mode === 'acids'}
-          >
-            Acids
-          </button>
-          <button 
-            className={mode === 'bases' ? 'active' : 'secondary'} 
-            onClick={() => setMode('bases')}
-            aria-pressed={mode === 'bases'}
-          >
-            Bases
-          </button>
-        </div>
-        
-        {mode === 'ionic' && (
-          <>
-            <div className="row">
-              <div>
-                <label htmlFor="cation-select" className="section-title">Cation (Positive Ion)</label>
-                <select 
-                  id="cation-select"
-                  value={cat} 
-                  onChange={e => setCat(e.target.value)}
-                  aria-describedby="cation-help"
-                >
-                  {cations.map(x => (
-                    <option key={x.symbol} value={x.symbol}>
-                      {x.symbol} — {x.name}
-                    </option>
-                  ))}
-                </select>
-                <div id="cation-help" className="help-text">
-                  Select a positively charged ion
-                </div>
-              </div>
-              <div>
-                <label htmlFor="anion-select" className="section-title">Anion (Negative Ion)</label>
-                <select 
-                  id="anion-select"
-                  value={an} 
-                  onChange={e => setAn(e.target.value)}
-                  aria-describedby="anion-help"
-                >
-                  {anions.map(x => (
-                    <option key={x.symbol} value={x.symbol}>
-                      {x.symbol} — {x.name}
-                    </option>
-                  ))}
-                </select>
-                <div id="anion-help" className="help-text">
-                  Select a negatively charged ion
-                </div>
-              </div>
-            </div>
-            
-            <div style={{ marginTop: 16 }}>
-              <span className="section-title">Ions (with charges)</span>
-              <div 
-                className="formula" 
-                dangerouslySetInnerHTML={{ __html: ionicIonsHTML }}
-                aria-label={`Ionic components: ${ionicIonsHTML.replace(/<[^>]*>/g, '')}`}
-              />
-            </div>
-            
-            <div style={{ marginTop: 16 }}>
-              <span className="section-title">Formula Unit (neutral)</span>
-              <div 
-                className="formula" 
-                dangerouslySetInnerHTML={{ __html: ionicFormula }}
-                aria-label={`Chemical formula: ${ionicFormula.replace(/<[^>]*>/g, '')}`}
-              />
-            </div>
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">Systematic Name</span>
-              <div className="feedback feedback-info">{nameResult}</div>
-            </div>
-          </>
-        )}
-        
-        {mode === 'covalent' && (
-          <>
-            <div className="row">
-              <div>
-                <label htmlFor="element1-select" className="section-title">Element 1</label>
-                <select 
-                  id="element1-select"
-                  value={nm1} 
-                  onChange={e => setNm1(e.target.value)}
-                >
-                  {nonmetals.map(x => (
-                    <option key={x.symbol} value={x.symbol}>
-                      {x.symbol} — {x.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="count1-input" className="section-title">Count</label>
-                <input 
-                  id="count1-input"
-                  type="number" 
-                  min="1" 
-                  max="10" 
-                  value={n1} 
-                  onChange={e => setN1(e.target.value)}
-                />
-              </div>
-            </div>
-            
-            <div className="row">
-              <div>
-                <label htmlFor="element2-select" className="section-title">Element 2</label>
-                <select 
-                  id="element2-select"
-                  value={nm2} 
-                  onChange={e => setNm2(e.target.value)}
-                >
-                  {nonmetals.map(x => (
-                    <option key={x.symbol} value={x.symbol}>
-                      {x.symbol} — {x.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="count2-input" className="section-title">Count</label>
-                <input 
-                  id="count2-input"
-                  type="number" 
-                  min="1" 
-                  max="10" 
-                  value={n2} 
-                  onChange={e => setN2(e.target.value)}
-                />
-              </div>
-            </div>
-            
-            <div style={{ marginTop: 16 }}>
-              <span className="section-title">Molecular Formula</span>
-              <div 
-                className="formula" 
-                dangerouslySetInnerHTML={{ __html: covFormula }}
-                aria-label={`Chemical formula: ${covFormula.replace(/<[^>]*>/g, '')}`}
-              />
-            </div>
-            
-            {covalentUncommon && (
-              <div className="callout" style={{ marginTop: 12 }}>
-                <strong>Note:</strong> This compound uses systematic naming (Greek prefixes) 
-                rather than common names.
-              </div>
-            )}
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">Systematic Name</span>
-              <div className="feedback feedback-info">{nameResult}</div>
-            </div>
-          </>
-        )}
-        
-        {mode === 'acids' && (
-          <>
-            <div className="row" style={{ marginBottom: 16 }}>
-              <button 
-                className={acidType === 'binary' ? 'active' : 'secondary'} 
-                onClick={() => setAcidType('binary')}
-                aria-pressed={acidType === 'binary'}
+    <div className="card">
+      <div className="section-title">Sandbox Builder</div>
+      <div className="headerband">
+        Build compounds step by step and see how naming works. 
+        Switch between Ionic and Covalent modes to explore different compound types.
+      </div>
+      
+      <div className="row" style={{ marginBottom: 16 }}>
+        <button 
+          className={mode === 'ionic' ? 'active' : 'secondary'} 
+          onClick={() => setMode('ionic')}
+          aria-pressed={mode === 'ionic'}
+        >
+          Ionic Compounds
+        </button>
+        <button 
+          className={mode === 'covalent' ? 'active' : 'secondary'} 
+          onClick={() => setMode('covalent')}
+          aria-pressed={mode === 'covalent'}
+        >
+          Covalent Compounds
+        </button>
+        <button 
+          className={mode === 'acids' ? 'active' : 'secondary'} 
+          onClick={() => setMode('acids')}
+          aria-pressed={mode === 'acids'}
+        >
+          Acids
+        </button>
+        <button 
+          className={mode === 'bases' ? 'active' : 'secondary'} 
+          onClick={() => setMode('bases')}
+          aria-pressed={mode === 'bases'}
+        >
+          Bases
+        </button>
+      </div>
+      
+      {mode === 'ionic' && (
+        <>
+          <div className="row">
+            <div>
+              <label htmlFor="cation-select" className="section-title">Cation (Positive Ion)</label>
+              <select 
+                id="cation-select"
+                value={cat} 
+                onChange={e => setCat(e.target.value)}
+                aria-describedby="cation-help"
               >
-                Binary Acids (H + Non-metal)
-              </button>
-              <button 
-                className={acidType === 'oxyacid' ? 'active' : 'secondary'} 
-                onClick={() => setAcidType('oxyacid')}
-                aria-pressed={acidType === 'oxyacid'}
-              >
-                Oxyacids (H + Polyatomic)
-              </button>
+                {cations.map(x => (
+                  <option key={x.symbol} value={x.symbol}>
+                    {x.symbol} — {x.name}
+                  </option>
+                ))}
+              </select>
+              <div id="cation-help" className="help-text">
+                Select a positively charged ion
+              </div>
             </div>
-            
-            {acidType === 'binary' && (
-              <div className="row">
-                <div>
-                  <label htmlFor="acid-element-select" className="section-title">Non-metal Element</label>
-                  <select 
-                    id="acid-element-select"
-                    value={acidElement} 
-                    onChange={e => setAcidElement(e.target.value)}
-                  >
-                    {nonmetals.filter(n => ['F', 'Cl', 'Br', 'I', 'S'].includes(n.symbol)).map(x => (
-                      <option key={x.symbol} value={x.symbol}>
-                        {x.symbol} — {x.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="help-text">
-                    Select a non-metal that can form binary acids
-                  </div>
-                </div>
+            <div>
+              <label htmlFor="anion-select" className="section-title">Anion (Negative Ion)</label>
+              <select 
+                id="anion-select"
+                value={an} 
+                onChange={e => setAn(e.target.value)}
+                aria-describedby="anion-help"
+              >
+                {anions.map(x => (
+                  <option key={x.symbol} value={x.symbol}>
+                    {x.symbol} — {x.name}
+                  </option>
+                ))}
+              </select>
+              <div id="anion-help" className="help-text">
+                Select a negatively charged ion
               </div>
-            )}
-            
-            {acidType === 'oxyacid' && (
-              <div className="row">
-                <div>
-                  <label htmlFor="acid-polyatomic-select" className="section-title">Polyatomic Ion</label>
-                  <select 
-                    id="acid-polyatomic-select"
-                    value={acidPolyatomic} 
-                    onChange={e => setAcidPolyatomic(e.target.value)}
-                  >
-                    {anions.filter(a => a.poly && ['NO3', 'NO2', 'SO4', 'SO3', 'CO3', 'PO4', 'ClO4', 'ClO3', 'ClO2', 'ClO'].includes(a.core)).map(x => (
-                      <option key={x.core} value={x.core}>
-                        {x.core} — {x.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="help-text">
-                    Select a polyatomic ion with oxygen
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div style={{ marginTop: 16 }}>
-              <span className="section-title">Acid Formula</span>
-              <div 
-                className="formula" 
-                dangerouslySetInnerHTML={{ __html: acidFormula }}
-                aria-label={`Acid formula: ${acidFormula}`}
+            </div>
+          </div>
+          
+          <div style={{ marginTop: 16 }}>
+            <span className="section-title">Ions (with charges)</span>
+            <div 
+              className="formula" 
+              dangerouslySetInnerHTML={{ __html: ionicIonsHTML }}
+              aria-label={`Ionic components: ${ionicIonsHTML.replace(/<[^>]*>/g, '')}`}
+            />
+          </div>
+          
+          <div style={{ marginTop: 16 }}>
+            <span className="section-title">Formula Unit (neutral)</span>
+            <div 
+              className="formula" 
+              dangerouslySetInnerHTML={{ __html: ionicFormula }}
+              aria-label={`Chemical formula: ${ionicFormula.replace(/<[^>]*>/g, '')}`}
+            />
+          </div>
+          
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">Systematic Name</span>
+            <div className="feedback feedback-info">{nameResult}</div>
+          </div>
+        </>
+      )}
+      
+      {mode === 'covalent' && (
+        <>
+          <div className="row">
+            <div>
+              <label htmlFor="element1-select" className="section-title">Element 1</label>
+              <select 
+                id="element1-select"
+                value={nm1} 
+                onChange={e => setNm1(e.target.value)}
+              >
+                {nonmetals.map(x => (
+                  <option key={x.symbol} value={x.symbol}>
+                    {x.symbol} — {x.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="count1-input" className="section-title">Count</label>
+              <input 
+                id="count1-input"
+                type="number" 
+                min="1" 
+                max="10" 
+                value={n1} 
+                onChange={e => setN1(e.target.value)}
               />
             </div>
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">Acid Name</span>
-              <div className="feedback feedback-info">{acidName}</div>
+          </div>
+          
+          <div className="row">
+            <div>
+              <label htmlFor="element2-select" className="section-title">Element 2</label>
+              <select 
+                id="element2-select"
+                value={nm2} 
+                onChange={e => setNm2(e.target.value)}
+              >
+                {nonmetals.map(x => (
+                  <option key={x.symbol} value={x.symbol}>
+                    {x.symbol} — {x.name}
+                  </option>
+                ))}
+              </select>
             </div>
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">State</span>
-              <div className="feedback feedback-info">(aq) - Aqueous solution</div>
+            <div>
+              <label htmlFor="count2-input" className="section-title">Count</label>
+              <input 
+                id="count2-input"
+                type="number" 
+                min="1" 
+                max="10" 
+                value={n2} 
+                onChange={e => setN2(e.target.value)}
+              />
             </div>
-          </>
-        )}
-        
-        {mode === 'bases' && (
-          <>
+          </div>
+          
+          <div style={{ marginTop: 16 }}>
+            <span className="section-title">Molecular Formula</span>
+            <div 
+              className="formula" 
+              dangerouslySetInnerHTML={{ __html: covFormula }}
+              aria-label={`Chemical formula: ${covFormula.replace(/<[^>]*>/g, '')}`}
+            />
+          </div>
+          
+          {covalentUncommon && (
+            <div className="callout" style={{ marginTop: 12 }}>
+              <strong>Note:</strong> This compound uses systematic naming (Greek prefixes) 
+              rather than common names.
+            </div>
+          )}
+          
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">Systematic Name</span>
+            <div className="feedback feedback-info">{nameResult}</div>
+          </div>
+        </>
+      )}
+      
+      {mode === 'acids' && (
+        <>
+          <div className="row" style={{ marginBottom: 16 }}>
+            <button 
+              className={acidType === 'binary' ? 'active' : 'secondary'} 
+              onClick={() => setAcidType('binary')}
+              aria-pressed={acidType === 'binary'}
+            >
+              Binary Acids (H + Non-metal)
+            </button>
+            <button 
+              className={acidType === 'oxyacid' ? 'active' : 'secondary'} 
+              onClick={() => setAcidType('oxyacid')}
+              aria-pressed={acidType === 'oxyacid'}
+            >
+              Oxyacids (H + Polyatomic)
+            </button>
+          </div>
+          
+          {acidType === 'binary' && (
             <div className="row">
               <div>
-                <label htmlFor="base-metal-select" className="section-title">Metal Cation</label>
+                <label htmlFor="acid-element-select" className="section-title">Non-metal Element</label>
                 <select 
-                  id="base-metal-select"
-                  value={baseMetal} 
-                  onChange={e => setBaseMetal(e.target.value)}
+                  id="acid-element-select"
+                  value={acidElement} 
+                  onChange={e => setAcidElement(e.target.value)}
                 >
-                  {cations.filter(c => ['Na+', 'K+', 'Ca2+', 'Mg2+', 'Al3+', 'Fe2+', 'Fe3+', 'Cu2+', 'NH4+'].includes(c.symbol)).map(x => (
+                  {nonmetals.filter(n => ['F', 'Cl', 'Br', 'I', 'S'].includes(n.symbol)).map(x => (
                     <option key={x.symbol} value={x.symbol}>
                       {x.symbol} — {x.name}
                     </option>
                   ))}
                 </select>
                 <div className="help-text">
-                  Select a metal cation that can form hydroxides
+                  Select a non-metal that can form binary acids
                 </div>
               </div>
+            </div>
+          )}
+          
+          {acidType === 'oxyacid' && (
+            <div className="row">
               <div>
-                <label htmlFor="base-oh-count" className="section-title">OH Groups</label>
-                <input 
-                  id="base-oh-count"
-                  type="number" 
-                  min="1" 
-                  max="3" 
-                  value={baseOHCount} 
-                  onChange={e => setBaseOHCount(Number(e.target.value))}
-                />
+                <label htmlFor="acid-polyatomic-select" className="section-title">Polyatomic Ion</label>
+                <select 
+                  id="acid-polyatomic-select"
+                  value={acidPolyatomic} 
+                  onChange={e => setAcidPolyatomic(e.target.value)}
+                >
+                  {anions.filter(a => a.poly && ['NO3', 'NO2', 'SO4', 'SO3', 'CO3', 'PO4', 'ClO4', 'ClO3', 'ClO2', 'ClO'].includes(a.core)).map(x => (
+                    <option key={x.core} value={x.core}>
+                      {x.core} — {x.name}
+                    </option>
+                  ))}
+                </select>
                 <div className="help-text">
-                  Number of hydroxide groups (usually matches metal charge)
+                  Select a polyatomic ion with oxygen
                 </div>
               </div>
             </div>
-            
-            <div style={{ marginTop: 16 }}>
-              <span className="section-title">Base Formula</span>
-              <div 
-                className="formula" 
-                dangerouslySetInnerHTML={{ __html: baseFormula }}
-                aria-label={`Base formula: ${baseFormula}`}
+          )}
+          
+          <div style={{ marginTop: 16 }}>
+            <span className="section-title">Acid Formula</span>
+            <div 
+              className="formula" 
+              dangerouslySetInnerHTML={{ __html: acidFormula }}
+              aria-label={`Acid formula: ${acidFormula}`}
+            />
+          </div>
+          
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">Acid Name</span>
+            <div className="feedback feedback-info">{acidName}</div>
+          </div>
+          
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">State</span>
+            <div className="feedback feedback-info">(aq) - Aqueous solution</div>
+          </div>
+        </>
+      )}
+      
+      {mode === 'bases' && (
+        <>
+          <div className="row">
+            <div>
+              <label htmlFor="base-metal-select" className="section-title">Metal Cation</label>
+              <select 
+                id="base-metal-select"
+                value={baseMetal} 
+                onChange={e => setBaseMetal(e.target.value)}
+              >
+                {cations.filter(c => ['Na+', 'K+', 'Ca2+', 'Mg2+', 'Al3+', 'Fe2+', 'Fe3+', 'Cu2+', 'NH4+'].includes(c.symbol)).map(x => (
+                  <option key={x.symbol} value={x.symbol}>
+                    {x.symbol} — {x.name}
+                  </option>
+                ))}
+              </select>
+              <div className="help-text">
+                Select a metal cation that can form hydroxides
+              </div>
+            </div>
+            <div>
+              <label htmlFor="base-oh-count" className="section-title">OH Groups</label>
+              <input 
+                id="base-oh-count"
+                type="number" 
+                min="1" 
+                max="3" 
+                value={baseOHCount} 
+                onChange={e => setBaseOHCount(Number(e.target.value))}
               />
+              <div className="help-text">
+                Number of hydroxide groups (usually matches metal charge)
+              </div>
             </div>
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">Base Name</span>
-              <div className="feedback feedback-info">{baseName}</div>
-            </div>
-            
-            <div style={{ marginTop: 12 }}>
-              <span className="section-title">State</span>
-              <div className="feedback feedback-info">(aq) - Aqueous solution</div>
-            </div>
-          </>
-        )}
-      </div>
-
-      <div className="card">
-        <div className="section-title">How It Works</div>
-        <div className="help">
-          <h4>Ionic Compounds</h4>
-          <p>Ionic compounds form when metals lose electrons to non-metals. The charges must balance to create a neutral compound.</p>
+          </div>
           
-          <h4>Covalent Compounds</h4>
-          <p>Covalent compounds form when non-metals share electrons. Greek prefixes indicate the number of each element.</p>
+          <div style={{ marginTop: 16 }}>
+            <span className="section-title">Base Formula</span>
+            <div 
+              className="formula" 
+              dangerouslySetInnerHTML={{ __html: baseFormula }}
+              aria-label={`Base formula: ${baseFormula}`}
+            />
+          </div>
           
-          <h4>Acids</h4>
-          <p>Acids are compounds that release H⁺ ions in water. Binary acids use "hydro-" prefix + non-metal root + "-ic acid". Oxyacids follow specific patterns based on the polyatomic ion.</p>
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">Base Name</span>
+            <div className="feedback feedback-info">{baseName}</div>
+          </div>
           
-          <h4>Bases</h4>
-          <p>Bases are compounds that release OH⁻ ions in water. Metal hydroxides are named as "metal name + hydroxide".</p>
-          
-          <h4>Naming Rules</h4>
-          <ul>
-            <li><strong>Ionic:</strong> Metal name + non-metal root + "ide"</li>
-            <li><strong>Covalent:</strong> Greek prefix + first element + Greek prefix + second element root + "ide"</li>
-            <li><strong>Polyatomic:</strong> Keep the ion's original name</li>
-            <li><strong>Binary Acids:</strong> hydro- + non-metal root + -ic acid</li>
-            <li><strong>Oxyacids:</strong> Follow polyatomic patterns (ate→ic, ite→ous)</li>
-            <li><strong>Bases:</strong> Metal name + hydroxide</li>
-          </ul>
-        </div>
-      </div>
+          <div style={{ marginTop: 12 }}>
+            <span className="section-title">State</span>
+            <div className="feedback feedback-info">(aq) - Aqueous solution</div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
-// Helper function for greatest common divisor
-function gcd(a, b) {
-  return b === 0 ? a : gcd(b, a % b)
-}

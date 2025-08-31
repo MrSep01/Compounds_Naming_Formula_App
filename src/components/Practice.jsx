@@ -196,189 +196,171 @@ export default function Practice({ score, setScore }) {
   }
 
   return (
-    <div className="grid">
-      <div className="card">
-        <div className="section-title">Practice Naming Compounds</div>
-        <div className="headerband">
-          Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
-        </div>
+    <div className="card">
+      <div className="section-title">Practice Naming Compounds</div>
+      
+      <div className="headerband">
+        Practice naming ionic, covalent, acid, and base compounds. Choose your difficulty and question type!
+      </div>
 
-        {/* Controls */}
-        <div className="row" style={{ marginBottom: 16 }}>
-          <div>
-            <label htmlFor="question-type-select" className="section-title">Question Type</label>
-            <select 
-              id="question-type-select"
-              value={questionType} 
-              onChange={e => setQuestionType(e.target.value)}
+      {/* Controls */}
+      <div className="row" style={{ marginBottom: 16 }}>
+        <div>
+          <label htmlFor="question-type-select" className="section-title">Question Type</label>
+          <select 
+            id="question-type-select"
+            value={questionType} 
+            onChange={e => setQuestionType(e.target.value)}
+          >
+            <option value="naming">Name the Compound</option>
+            <option value="type">Identify Compound Type</option>
+            <option value="formula">Write the Formula</option>
+          </select>
+        </div>
+        
+        <div>
+          <label htmlFor="difficulty-select" className="section-title">Difficulty</label>
+          <select 
+            id="difficulty-select"
+            value={difficulty} 
+            onChange={e => setDifficulty(e.target.value)}
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        
+        <div>
+          <label className="section-title">Timer Mode</label>
+          <div className="row" style={{ gap: 8, marginTop: 4 }}>
+            <button 
+              className={timerMode ? 'active' : 'ghost'}
+              onClick={() => setTimerMode(!timerMode)}
+              style={{ padding: '6px 12px', fontSize: '14px' }}
             >
-              <option value="naming">Name the Compound</option>
-              <option value="type">Identify Compound Type</option>
-              <option value="formula">Write the Formula</option>
-            </select>
+              {timerMode ? '⏰ ON' : '⏰ OFF'}
+            </button>
+            {timerMode && (
+              <div className="timer">
+                ⏱️ {timeLeft}s
+              </div>
+            )}
           </div>
-          
-          <div>
-            <label htmlFor="difficulty-select" className="section-title">Difficulty</label>
-            <select 
-              id="difficulty-select"
-              value={difficulty} 
-              onChange={e => setDifficulty(e.target.value)}
-            >
-              <option value="easy">Easy</option>
-              <option value="medium">Medium</option>
-              <option value="hard">Hard</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="section-title">Timer Mode</label>
-            <div className="row" style={{ gap: 8, marginTop: 4 }}>
-              <button 
-                className={timerMode ? 'active' : 'ghost'}
-                onClick={() => setTimerMode(!timerMode)}
-                style={{ padding: '6px 12px', fontSize: '14px' }}
-              >
-                {timerMode ? '⏰ ON' : '⏰ OFF'}
-              </button>
-              {timerMode && (
-                <div className="timer">
-                  ⏱️ {timeLeft}s
+        </div>
+      </div>
+
+      {/* Question Display */}
+      {currentQuestion && (
+        <div className="question-display">
+          <div className="question-header">
+            <h3>
+              {questionType === 'naming' && `Name this compound:`}
+              {questionType === 'type' && `What type of compound is this?`}
+              {questionType === 'formula' && `Write the formula for:`}
+            </h3>
+            
+            <div className="question-content">
+              {questionType === 'naming' && (
+                <div className="formula-display">
+                  <span className="formula-large">{currentQuestion.formula}</span>
+                  <span className="compound-type-badge">{currentQuestion.type}</span>
+                </div>
+              )}
+              
+              {questionType === 'type' && (
+                <div className="formula-display">
+                  <span className="formula-large">{currentQuestion.formula}</span>
+                </div>
+              )}
+              
+              {questionType === 'formula' && (
+                <div className="name-display">
+                  <span className="compound-name-large">{currentQuestion.name}</span>
+                  <span className="compound-type-badge">{currentQuestion.type}</span>
                 </div>
               )}
             </div>
           </div>
-        </div>
 
-        {/* Question Display */}
-        {currentQuestion && (
-          <div className="question-display">
-            <div className="question-header">
-              <h3>
-                {questionType === 'naming' && `Name this compound:`}
-                {questionType === 'type' && `What type of compound is this?`}
-                {questionType === 'formula' && `Write the formula for:`}
-              </h3>
-              
-              <div className="question-content">
-                {questionType === 'naming' && (
-                  <div className="formula-display">
-                    <span className="formula-large">{currentQuestion.formula}</span>
-                    <span className="compound-type-badge">{currentQuestion.type}</span>
-                  </div>
-                )}
-                
-                {questionType === 'type' && (
-                  <div className="formula-display">
-                    <span className="formula-large">{currentQuestion.formula}</span>
-                  </div>
-                )}
-                
-                {questionType === 'formula' && (
-                  <div className="name-display">
-                    <span className="compound-name-large">{currentQuestion.name}</span>
-                    <span className="compound-type-badge">{currentQuestion.type}</span>
-                  </div>
-                )}
-              </div>
+          {/* Answer Input */}
+          <form onSubmit={handleSubmit} className="answer-form">
+            <div className="input-group">
+              <label htmlFor="answer-input" className="section-title">
+                {questionType === 'naming' && 'Your answer:'}
+                {questionType === 'type' && 'Compound type:'}
+                {questionType === 'formula' && 'Formula:'}
+              </label>
+              <input 
+                id="answer-input"
+                type="text" 
+                placeholder={
+                  questionType === 'naming' ? 'Enter the compound name...' :
+                  questionType === 'type' ? 'ionic, covalent, acid, or base...' :
+                  'Enter the chemical formula...'
+                }
+                value={userAnswer} 
+                onChange={e => setUserAnswer(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isLoading}
+                aria-label="Answer input"
+              />
             </div>
-
-            {/* Answer Input */}
-            <form onSubmit={handleSubmit} className="answer-form">
-              <div className="input-group">
-                <label htmlFor="answer-input" className="section-title">
-                  {questionType === 'naming' && 'Your answer:'}
-                  {questionType === 'type' && 'Compound type:'}
-                  {questionType === 'formula' && 'Formula:'}
-                </label>
-                <input 
-                  id="answer-input"
-                  type="text" 
-                  placeholder={
-                    questionType === 'naming' ? 'Enter the compound name...' :
-                    questionType === 'type' ? 'ionic, covalent, acid, or base...' :
-                    'Enter the chemical formula...'
-                  }
-                  value={userAnswer} 
-                  onChange={e => setUserAnswer(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isLoading}
-                  aria-label="Answer input"
-                />
-              </div>
-              
-              <div className="row" style={{ marginTop: 12 }}>
-                <button 
-                  type="submit" 
-                  className="success" 
-                  disabled={isLoading || !userAnswer.trim()}
-                >
-                  {isLoading ? 'Checking...' : 'Check Answer'}
-                </button>
-                
-                <button 
-                  type="button" 
-                  className="ghost" 
-                  onClick={() => setUserAnswer('')}
-                >
-                  Clear
-                </button>
-                
-                <button 
-                  type="button" 
-                  className="secondary" 
-                  onClick={getHint}
-                  disabled={hintLevel >= 3}
-                >
-                  💡 Hint ({3 - hintLevel} left)
-                </button>
-              </div>
-            </form>
-
-            {/* Feedback */}
-            {feedback && (
-              <div className={`feedback feedback-${feedback.type}`} style={{ marginTop: 16 }}>
-                {feedback.message}
-              </div>
-            )}
-
-            {/* Hint Display */}
-            {showHint && (
-              <div className="hint-display">
-                <strong>💡 Hint:</strong> {getHintText()}
-              </div>
-            )}
-
-            {/* Next Question Button */}
-            {feedback && !feedback.correct && (
+            
+            <div className="row" style={{ marginTop: 12 }}>
               <button 
+                type="submit" 
                 className="success" 
-                onClick={generateQuestion}
-                style={{ marginTop: 12 }}
+                disabled={isLoading || !userAnswer.trim()}
               >
-                Next Question
+                {isLoading ? 'Checking...' : 'Check Answer'}
               </button>
-            )}
-          </div>
-        )}
-      </div>
+              
+              <button 
+                type="button" 
+                className="ghost" 
+                onClick={() => setUserAnswer('')}
+              >
+                Clear
+              </button>
+              
+              <button 
+                type="button" 
+                className="secondary" 
+                onClick={getHint}
+                disabled={hintLevel >= 3}
+              >
+                💡 Hint ({3 - hintLevel} left)
+              </button>
+            </div>
+          </form>
 
-      {/* Score Display */}
-      <div className="card">
-        <div className="section-title">Your Progress</div>
-        
-        <div className="progress-stats">
-          <div className="stat-item">
-            <strong>Accuracy:</strong> {score.total ? Math.round((score.correct / score.total) * 100) : 0}%
-          </div>
-          <div className="stat-item">
-            <strong>Current Streak:</strong> {score.streak}
-          </div>
-          <div className="stat-item">
-            <strong>Questions Attempted:</strong> {score.total}
-          </div>
+          {/* Feedback */}
+          {feedback && (
+            <div className={`feedback feedback-${feedback.type}`} style={{ marginTop: 16 }}>
+              {feedback.message}
+            </div>
+          )}
+
+          {/* Hint Display */}
+          {showHint && (
+            <div className="hint-display">
+              <strong>💡 Hint:</strong> {getHintText()}
+            </div>
+          )}
+
+          {/* Next Question Button */}
+          {feedback && !feedback.correct && (
+            <button 
+              className="success" 
+              onClick={generateQuestion}
+              style={{ marginTop: 12 }}
+            >
+              Next Question
+            </button>
+          )}
         </div>
-      </div>
+      )}
     </div>
   )
 }
